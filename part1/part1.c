@@ -5,8 +5,8 @@
 
 #define N 10
 sem_t mutex;
-sem_t empty = N;
-sem_t full = 0;
+sem_t empty;
+sem_t full;
 
 int count = 10;
 int pthr = 5;
