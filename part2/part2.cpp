@@ -89,6 +89,7 @@ void mon_insert(char alpha)
     else
     {
         buffer.push(alpha);
+        itemCount--;
         printf("p:<>, item: %c, at %lu\n", alpha, buffer.size() - 1);
         sem_post(&semThread);
     }
