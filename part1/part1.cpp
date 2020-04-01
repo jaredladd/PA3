@@ -61,14 +61,17 @@ int main(int argc, char **argv)
 void *producer(void *tid)
 {
 
-    while (count != 0)
+    while (1)
     {
         //printf("%d", empty);
         sem_wait(&empty);
         sem_wait(&mutex);
         // insert X into the first available slot in the buffer insert('X');
-        buffer.push('X');
         sem_wait(&count_mutex);
+        if (count > 0)
+        {
+            buffer.push('X');
+        }
         count--;
         sem_post(&count_mutex);
         //std::cout << "p: " << (long)tid << " item: X at " << buffer.size() - 1 << '\n';
