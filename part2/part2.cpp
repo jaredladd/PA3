@@ -13,8 +13,8 @@ int buffer_size;
 
 void *producer(void *tid);
 void *consumer(void *tid);
-void mon_insert(char alpha);
-void mon_remove();
+void mon_insert(char alpha, void *tid);
+void mon_remove(void *tid);
 
 sem_t semThread;
 
@@ -57,7 +57,7 @@ void *producer(void *tid)
     while (1)
     {
         alpha = 'a' + rand() % 26;
-        mon_insert(alpha);
+        mon_insert(alpha, tid);
     }
 }
 
@@ -66,13 +66,13 @@ void *consumer(void *tid)
     char result;
     while (1)
     {
-        mon_remove();
+        mon_remove(tid);
     }
 }
 
 // add more variables as necessary // define condition variable struct // define monitor struct
 
-void mon_insert(char alpha)
+void mon_insert(char alpha, void *tid)
 {
     sem_wait(&semThread);
     if (itemCount == 0)
@@ -90,12 +90,12 @@ void mon_insert(char alpha)
     {
         buffer.push(alpha);
         itemCount--;
-        printf("p:<>, item: %c, at %lu\n", alpha, buffer.size() - 1);
+        printf("p:<%lu>, item: %c, at %lu\n", (long unsigned int)tid, alpha, buffer.size() - 1);
         sem_post(&semThread);
     }
 }
 
-void mon_remove()
+void mon_remove(void *tid)
 {
     char result;
     sem_wait(&semThread);
@@ -112,7 +112,7 @@ void mon_remove()
     {
         char result = buffer.top();
         buffer.pop();
-        printf("c:<>, item: %c, at %lu\n", result, buffer.size() - 1);
+        printf("c:<%lu>, item: %c, at %lu\n", (long unsigned int)tid, result, buffer.size());
         sem_post(&semThread);
     }
 }
