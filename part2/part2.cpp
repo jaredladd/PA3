@@ -16,6 +16,8 @@ void *consumer(void *tid);
 void mon_insert(char alpha);
 void mon_remove();
 
+sem_t semThread;
+
 std::stack<char> buffer;
 
 int main(int argc, char **argv)
@@ -28,6 +30,8 @@ int main(int argc, char **argv)
 
     //initialize the correct number of threads
     pthread_t thr[pthr + cthr];
+
+    sem_init(&semThread, 0, 1);
 
     //create producer threads
     for (long i = 0; i < pthr; i++)
@@ -66,7 +70,6 @@ void *consumer(void *tid)
     }
 }
 
-sem_t semThread;
 // add more variables as necessary // define condition variable struct // define monitor struct
 
 void mon_insert(char alpha)
