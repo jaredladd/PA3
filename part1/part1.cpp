@@ -78,6 +78,7 @@ void *producer(void *tid)
             sem_post(&count_mutex);
             sem_post(&mutex);
             sem_post(&full);
+            pthread_exit(NULL);
         }
         sem_post(&count_mutex);
         //std::cout << "p: " << (long)tid << " item: X at " << buffer.size() - 1 << '\n';
@@ -86,7 +87,6 @@ void *producer(void *tid)
         sem_post(&mutex);
         sem_post(&full);
     }
-    pthread_exit(NULL);
 }
 void *consumer(void *tid)
 {
