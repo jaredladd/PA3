@@ -4,16 +4,16 @@
 #include <pthread.h>
 #include <semaphore.h>
 #include <unistd.h>
+#include <cstdlib>
 
-#define N 1
 sem_t mutex;
 sem_t empty;
 sem_t full;
 sem_t count_mutex;
 
-int count = 10;
-int pthr = 5;
-int cthr = 5;
+int count;
+int pthr;
+int cthr;
 
 void *producer(void *tid);
 void *consumer(void *tid);
@@ -22,6 +22,11 @@ std::stack<char> buffer;
 
 int main(int argc, char **argv)
 {
+
+#define N atoi(argv[2])
+    pthr = atoi(argv[4]);
+    cthr = atoi(argv[6]);
+    count = atoi(argv[8]);
 
     pthread_t thr[pthr + cthr];
     sem_init(&mutex, 0, 1);
