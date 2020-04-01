@@ -71,12 +71,18 @@ void *producer(void *tid)
         if (count > 0)
         {
             buffer.push('X');
+            count--;
         }
-        count--;
+        else
+        {
+            sem_post(&count_mutex);
+            sem_post(&mutex);
+            sem_post(&full);
+        }
         sem_post(&count_mutex);
         //std::cout << "p: " << (long)tid << " item: X at " << buffer.size() - 1 << '\n';
 
-        printf("p:<%lu>, item: %c, at %lu\n", (long unsigned int)tid, 'X', buffer.size());
+        printf("p:<%lu>, item: %c, at %lu\n", (long unsigned int)tid, 'X', buffer.size() - 1);
         sem_post(&mutex);
         sem_post(&full);
     }
