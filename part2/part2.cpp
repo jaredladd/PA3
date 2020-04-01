@@ -75,6 +75,11 @@ void *consumer(void *tid)
 void mon_insert(char alpha)
 {
     sem_wait(&semThread);
+    if (itemCount == 0)
+    {
+        sem_post(&semThread);
+        pthread_exit(NULL);
+    }
     // implement either Hoare or Mesa paradigm
     // synchronization and bookkeeping
     if (buffer.size() == buffer_size)
@@ -93,7 +98,12 @@ void mon_remove()
 {
     char result;
     sem_wait(&semThread);
-    if (buffer.size() == 0)
+    if (itemCount == 0 && buffer.size() == 0)
+    {
+        sem_post(&semThread);
+        pthread_exit(NULL);
+    }
+    else if (buffer.size() == 0)
     {
         sem_post(&semThread);
     }
