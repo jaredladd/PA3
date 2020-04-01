@@ -96,18 +96,22 @@ void *consumer(void *tid)
         sem_wait(&mutex);
         // remove X from the last used slot in the buffer remove();
         //std::cout << (long)tid << '\n';
+        if (count == 0 && buffer.empty())
+        {
+            sem_post(&mutex);
+            sem_post(&empty);
+            pthread_exit(NULL);
+        }
+        else if (!buffer.empty())
+        {
+            buffer.pop();
+            printf("c:<%lu>, item: %c, at %lu\n", (long unsigned int)tid, 'X', buffer.size());
+        }
 
-        buffer.pop();
         //std::cout << "c: " << (long)tid << " item: X at " << buffer.size() << '\n';
-        printf("c:<%lu>, item: %c, at %lu\n", (long unsigned int)tid, 'X', buffer.size());
-
         sem_post(&mutex);
         sem_post(&empty);
 
         //std::cout << count << '\n';
-    }
-    if (count == 0)
-    {
-        pthread_exit(NULL);
     }
 }
