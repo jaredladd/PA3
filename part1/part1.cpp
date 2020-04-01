@@ -9,6 +9,7 @@
 sem_t mutex;
 sem_t empty;
 sem_t full;
+sem_t count_mutex;
 
 int count = 10;
 int pthr = 5;
@@ -24,6 +25,7 @@ int main(int argc, char **argv)
 
     pthread_t thr[pthr + cthr];
     sem_init(&mutex, 0, 1);
+    sem_init(&count_mutex, 0, 1);
     sem_init(&empty, 0, N);
     sem_init(&full, 0, 0);
     for (long i = 0; i < pthr; i++)
@@ -58,6 +60,7 @@ int main(int argc, char **argv)
 }
 void *producer(void *tid)
 {
+
     while (count != 0)
     {
         //printf("%d", empty);
@@ -65,7 +68,9 @@ void *producer(void *tid)
         sem_wait(&mutex);
         // insert X into the first available slot in the buffer insert('X');
         buffer.push('X');
+        sem_wait(&count_mutex);
         count--;
+        sem_post(&count_mutex);
         //std::cout << "p: " << (long)tid << " item: X at " << buffer.size() - 1 << '\n';
 
         printf("p:<%lu>, item: %c, at %lu\n", (long unsigned int)tid, 'X', buffer.size());
