@@ -58,7 +58,6 @@ int main(int argc, char **argv)
 }
 void *producer(void *tid)
 {
-    std::cout << count;
     while (count != 0)
     {
         //printf("%d", empty);
@@ -73,7 +72,7 @@ void *producer(void *tid)
         sem_post(&mutex);
         sem_post(&full);
     }
-    exit(0);
+    pthread_exit(NULL);
 }
 void *consumer(void *tid)
 {
@@ -93,5 +92,8 @@ void *consumer(void *tid)
 
         //std::cout << count << '\n';
     }
-    exit(0);
+    if (count == 0)
+    {
+        pthread_exit(NULL);
+    }
 }
